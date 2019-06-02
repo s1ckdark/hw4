@@ -8,7 +8,7 @@ import io.vertx.core.http.HttpServer;
 import yonsei.app.hw.db.base.RedisPool;
 
 public class Launcher {
-	
+
 	//change this value for Homework number^^;
 	final private int hwNo = 4;
 

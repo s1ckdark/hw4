@@ -12,80 +12,80 @@ import yonsei.app.hw.db.base.RedisPool;
 /*
  * UserInfoTable for user's information
  *
- * type hash 
+ * type hash
  * one row for a user
- * 
+ *
  * UserInfo:uidx - {}
  */
 public class UserInfoTable extends RedisBase {
 
-	private static UserInfoTable inst = new UserInfoTable();
-	public static UserInfoTable inst() {return inst;} 
+    private static UserInfoTable inst = new UserInfoTable();
+    public static UserInfoTable inst() {return inst;}
 
-	@Override
-	protected String TABLENAME() {
-		return "UserInfo";
-	}
+    @Override
+    protected String TABLENAME() {
+        return "UserInfo";
+    }
 
-	public void put(String uidx, String field, String value) {
-		try(Jedis jedis = getJedis()) {
-			if (value != null)
-				jedis.hset(key(uidx), field, value);
-			else 
-				jedis.hdel(key(uidx), field);
-		}
-	}
-	
-	public JsonObject get(String uidx) {
-		try(Jedis jedis = getJedis()) {
-			Map<String, String> vals = jedis.hgetAll(key(uidx));
-			
-			//Map<String, String> -> Map<String, Object> -> JsonObject
-			return new JsonObject(new HashMap<>(vals));
-		}
-	}
-	
-	public String get(String uidx, String field) {
-		try(Jedis jedis = getJedis()) {
-			return jedis.hget(key(uidx), field);
-		}
-	}
-	
-	public void del(String uidx) {
-		try(Jedis jedis = getJedis()) {
-			jedis.del(key(uidx));
-		}
-	}
-	
+    public void put(String uidx, String field, String value) {
+        try(Jedis jedis = getJedis()) {
+            if (value != null)
+                jedis.hset(key(uidx), field, value);
+            else
+                jedis.hdel(key(uidx), field);
+        }
+    }
+
+    public JsonObject get(String uidx) {
+        try(Jedis jedis = getJedis()) {
+            Map<String, String> vals = jedis.hgetAll(key(uidx));
+
+            //Map<String, String> -> Map<String, Object> -> JsonObject
+            return new JsonObject(new HashMap<>(vals));
+        }
+    }
+
+    public String get(String uidx, String field) {
+        try(Jedis jedis = getJedis()) {
+            return jedis.hget(key(uidx), field);
+        }
+    }
+
+    public void del(String uidx) {
+        try(Jedis jedis = getJedis()) {
+            jedis.del(key(uidx));
+        }
+    }
+
 }
 
 public abstract class RedisBase {
-	protected Jedis getJedis() {
-		return RedisPool.inst().getJedis();
-	}
-	public void put(String uidx, JsonObject params) {
-		String name = params.getString("name");
-		String age = params.getString("age");
-		try(Jedis jedis = getJedis()){
-			JsonObject val = new JsonObject().put("name",name).put("age", age);
-			jedis.hset("UserInfo",uidx,val.toString());
-		}
-	}
+    protected Jedis getJedis() {
+        return RedisPool.inst().getJedis();
+    }
+    public void put(String uidx, JsonObject params) {
+        String name = params.getString("name");
+        String age = params.getString("age");
+        try(Jedis jedis = getJedis()){
+            JsonObject val = new JsonObject().put("name",name).put("age", age);
+            jedis.hset("UserInfo",uidx,val.toString());
+        }
+    }
 
-	public JsonObject get(String uidx) {
-		try(Jedis jedis = getJedis()){
-			String val = jedis.hget("UserInfo", uidx);
-			if (val != null)
-				return new JsonObject(val);
+    public JsonObject get(String uidx) {
+        try(Jedis jedis = getJedis()){
+            String val = jedis.hget("UserInfo", uidx);
+            if (val != null)
+                return new JsonObject(val);
 //				jedis.hset(key(uidx), field, value);
-			else
-				return new JsonObject();
+            else
+                return new JsonObject();
 //				jedis.hdel(key(uidx), field);
-		}
-		}
-	}
-	public void del(String uidx) {
-		try(Jedis jedis = getJedis()) {
-			jedis.hdel("UserInfo", uidx);
-		}
+        }
+    }
 }
+    public void del(String uidx) {
+        try(Jedis jedis = getJedis()) {
+            jedis.hdel("UserInfo", uidx);
+        }
+    }

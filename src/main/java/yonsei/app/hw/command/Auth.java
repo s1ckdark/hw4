@@ -78,38 +78,10 @@ public class Auth {
 		JsonObject session = json.getJsonObject("session");
 		String uidx = session.getString("uidx");
 		String id = UserInfoTable.inst().get(uidx, "id");
-		
+
 		UserInfoTable.inst().del(uidx);
 		SessionIDTable.inst().del(uidx);
 		AuthTable.inst().del(id);
-
-		return new JsonObject().put("ret", true);
-	}
-
-	public static JsonObject userinfo_put(JsonObject json) {
-		JsonObject session = json.getJsonObject("session");
-		String uidx = session.getString("uidx");
-
-		JsonObject packet = json.getJsonObject("packet");
-		UserInfoTable.inst().put(uidx, packet);
-
-		return JsonObject().put("ret", true);
-	}
-
-	public static JsonObject userinfo_get(JsonObject json) {
-		JsonObject session = json.getJsonObject("session");
-		String uidx = session.getString("uidx");
-
-		JsonObject userinfo = UserInfoTable.inst().get(uidx);
-		return new JsonObject().put("ret", true).put("userinfo", userinfo);
-	}
-
-	public static JsonObject userinfo_del(JsonObject json) {
-		JsonObject session = json.getJsonObject("session");
-		String uidx = session.getString("uidx");
-
-		JsonObject packet = json.getJsonObject("packet");
-		UserInfoTable.inst().del(uidx);
 
 		return new JsonObject().put("ret", true);
 	}
