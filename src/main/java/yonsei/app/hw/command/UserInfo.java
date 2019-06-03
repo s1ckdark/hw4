@@ -1,6 +1,7 @@
 package yonsei.app.hw.command;
 
 import io.vertx.core.json.JsonObject;
+import netscape.javascript.JSObject;
 import yonsei.app.hw.db.UserInfoTable;
 
 public class UserInfo {
@@ -12,7 +13,7 @@ public class UserInfo {
         JsonObject packet = json.getJsonObject("packet");
         UserInfoTable.inst().put(uidx, packet);
 
-        return JsonObject().put("ret", true);
+        return new JsonObject().put("ret", true);
     }
 
     public static JsonObject userinfo_get(JsonObject json) {
@@ -33,13 +34,4 @@ public class UserInfo {
         return new JsonObject().put("ret", true);
     }
 
-//    public static JsonObject userinfo_put(JsonObject json){
-//        return new JsonObject();
-//    }
-//    public static JsonObject userinfo_get(JsonObject json){
-//        return new JsonObject();
-//    }
-//    public static JsonObject userinfo_del(JsonObject json){
-//        return new JsonObject();
-//    }
 }

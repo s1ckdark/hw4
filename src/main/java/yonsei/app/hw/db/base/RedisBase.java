@@ -3,6 +3,7 @@ package yonsei.app.hw.db.base;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertx.core.json.JsonObject;
 import redis.clients.jedis.Jedis;
 
 /*
@@ -13,6 +14,9 @@ public abstract class RedisBase {
 
 	protected abstract String TABLENAME();
 	static private Set<String> tablenames = new HashSet<String>();
+	protected Jedis getJedis() {
+			return RedisPool.inst().getJedis();
+	}
 
 	//check duplicated table name
 	protected RedisBase() {
@@ -34,8 +38,4 @@ public abstract class RedisBase {
 			return key();
 		return String.format("%s:%s", TABLENAME(), String.format(key, args));
 	}
-
-	protected Jedis getJedis() {
-		return RedisPool.inst().getJedis();
-	}
-} 
+}
