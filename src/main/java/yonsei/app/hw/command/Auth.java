@@ -9,28 +9,28 @@ import yonsei.app.hw.db.SessionIDTable;
 import yonsei.app.hw.db.UserInfoTable;
 
 public class Auth {
-	
+
 	public static JsonObject signup(JsonObject json) {
 		JsonObject packet = json.getJsonObject("packet");
-		
+
 		String id = packet.getString("ID");
 		String pwd = packet.getString("pwd");
-		
+
 		if (AuthTable.inst().get(id) == null) {
 			String uidx = CountTable.inst().next("nextUserIndex").toString();
 			if (AuthTable.inst().put(id, pwd, uidx)) {
-				UserInfoTable.inst().put(uidx, "id", id);
+				UserInfoTable.inst().put(uidx,packet);
 				return new JsonObject().put("ret", true);
 			}
 		}
-		
+
 		return new JsonObject().put("ret", false).put("message", "이미 존재하는 아이디입니다.");
 	}
-	
-	
+
+
 	public static JsonObject signin(JsonObject json) {
 		JsonObject packet = json.getJsonObject("packet");
-		
+
 		String id = packet.getString("ID");
 		String pwd = packet.getString("pwd");
 
@@ -53,26 +53,27 @@ public class Auth {
 		if (oldSessionID != null) {
 			SessionIDTable.inst().del(oldSessionID);
 		}
-		
+
 		//4) make new session id
 		String sessionID = "sid:"+ new Date().getTime() + ":" + uidx;
-		
+
 		SessionIDTable.inst().put(sessionID, uidx);
-		UserInfoTable.inst().put(uidx, "sessionID", sessionID);
-		
+//		UserInfoTable.inst().put(uidx, "sessionID", sessionID);
+		UserInfoTable.inst().put(uidx, packet);
+
 		return new JsonObject().put("ret", true).put("sessionID", sessionID);
 	}
-	
+
 	public static JsonObject signout(JsonObject json) {
 		JsonObject session = json.getJsonObject("session");
 		String uidx = session.getString("uidx");
-		
+
 		UserInfoTable.inst().put(uidx, "sessionID", null);
 		SessionIDTable.inst().del(uidx);
-		
+
 		return new JsonObject().put("ret", true);
 	}
-	
+
 	public static JsonObject dropout(JsonObject json) {
 
 		JsonObject session = json.getJsonObject("session");
@@ -82,6 +83,34 @@ public class Auth {
 		UserInfoTable.inst().del(uidx);
 		SessionIDTable.inst().del(uidx);
 		AuthTable.inst().del(id);
+
+		return new JsonObject().put("ret", true);
+	}
+
+	public static JsonObject userinfo_put(JsonObject json) {
+		JsonObject session = json.getJsonObject("session");
+		String uidx = session.getString("uidx");
+
+		JsonObject packet = json.getJsonObject("packet");
+		UserInfoTable.inst().put(uidx, packet);
+
+		return new JsonObject().put("ret", true);
+	}
+
+	public static JsonObject userinfo_get(JsonObject json) {
+		JsonObject session = json.getJsonObject("session");
+		String uidx = session.getString("uidx");
+
+		JsonObject userinfo = UserInfoTable.inst().get(uidx);
+		return new JsonObject().put("ret", true).put("userinfo", userinfo);
+	}
+
+	public static JsonObject userinfo_del(JsonObject json) {
+		JsonObject session = json.getJsonObject("session");
+		String uidx = session.getString("uidx");
+
+		JsonObject packet = json.getJsonObject("packet");
+		UserInfoTable.inst().del(uidx);
 
 		return new JsonObject().put("ret", true);
 	}

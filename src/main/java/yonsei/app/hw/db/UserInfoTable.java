@@ -20,6 +20,7 @@ import yonsei.app.hw.db.base.RedisPool;
 public class UserInfoTable extends RedisBase {
 
     private static UserInfoTable inst = new UserInfoTable();
+
     public static UserInfoTable inst() {
         return inst;
     }
@@ -27,6 +28,12 @@ public class UserInfoTable extends RedisBase {
        @Override
         protected String TABLENAME() {
             return "UserInfo";
+        }
+
+        public abstract class RedisBase{
+            protected Jedis getJedis() {
+                return RedisPool.inst().getJedis();
+            }
         }
 
         public void put(String uidx, JsonObject params) {
@@ -51,8 +58,7 @@ public class UserInfoTable extends RedisBase {
 
         public void del(String uidx) {
             try (Jedis jedis = getJedis()) {
-                jedis.del("UserInfo", uidx);
+                jedis.hdel("UserInfo", uidx);
             }
         }
     }
-
