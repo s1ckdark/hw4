@@ -40,7 +40,7 @@ public class Launcher {
 			//result after listen
 			if (handler.succeeded()) {
 				System.out.println("http://127.0.0.1:" + port + "/or http://ServerIP:" + port + "/");
-				System.out.println("ID : " + id);
+				System.out.println(" ID : " + id);
 				
 				//connect to db if server start successfully
 				if (!connectRedis()) {
