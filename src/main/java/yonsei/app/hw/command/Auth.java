@@ -19,7 +19,8 @@ public class Auth {
 		if (AuthTable.inst().get(id) == null) {
 			String uidx = CountTable.inst().next("nextUserIndex").toString();
 			if (AuthTable.inst().put(id, pwd, uidx)) {
-				UserInfoTable.inst().put(uidx,packet);
+				UserInfoTable.inst().put(uidx, "id",id);
+//				UserInfoTable.inst().put(uidx, packet);
 				return new JsonObject().put("ret", true);
 			}
 		}
@@ -40,7 +41,7 @@ public class Auth {
 			return new JsonObject().put("ret", false).put("message", "회원이 아닙니다.");
 		}
 
-		//2) check a inputed password 
+		//2) check a inputed password
 		String userPwd = userAuthInfo.getString("pwd");
 		if (pwd.equals(userPwd) == false) {
 			return new JsonObject().put("ret", false).put("message", "비밀번호가 다릅니다.");
@@ -50,6 +51,7 @@ public class Auth {
 
 		//3)Unlink the old session id
 		String oldSessionID = UserInfoTable.inst().get(uidx, "sessionID");
+//		String oldSessionID = String.valueOf(UserInfoTable.inst().get(uidx));
 		if (oldSessionID != null) {
 			SessionIDTable.inst().del(oldSessionID);
 		}
@@ -58,8 +60,8 @@ public class Auth {
 		String sessionID = "sid:"+ new Date().getTime() + ":" + uidx;
 
 		SessionIDTable.inst().put(sessionID, uidx);
-//		UserInfoTable.inst().put(uidx, "sessionID", sessionID);
-		UserInfoTable.inst().put(uidx, packet);
+		UserInfoTable.inst().put(uidx, "sessionID", sessionID);
+//		UserInfoTable.inst().put(uidx, packet);
 
 		return new JsonObject().put("ret", true).put("sessionID", sessionID);
 	}
@@ -68,6 +70,7 @@ public class Auth {
 		JsonObject session = json.getJsonObject("session");
 		String uidx = session.getString("uidx");
 
+//		UserInfoTable.inst().put(uidx, session);
 		UserInfoTable.inst().put(uidx, "sessionID", null);
 		SessionIDTable.inst().del(uidx);
 
@@ -79,6 +82,7 @@ public class Auth {
 		JsonObject session = json.getJsonObject("session");
 		String uidx = session.getString("uidx");
 		String id = UserInfoTable.inst().get(uidx, "id");
+//		String id = String.valueOf(UserInfoTable.inst().get(uidx));
 
 		UserInfoTable.inst().del(uidx);
 		SessionIDTable.inst().del(uidx);
