@@ -68,5 +68,4 @@ public class UserInfoTable extends RedisBase {
             jedis.del("UserInfo", uidx);
         }
     }
-
 }

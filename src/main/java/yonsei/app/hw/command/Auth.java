@@ -25,7 +25,7 @@ public class Auth {
 			}
 		}
 
-		return new JsonObject().put("ret", false).put("message", "이미 존재하는 아이디입니다.");
+		return new JsonObject().put("ret", false).put("message", "already taken");
 	}
 
 
@@ -38,13 +38,13 @@ public class Auth {
 		//1) check id exists
 		JsonObject userAuthInfo = AuthTable.inst().get(id);
 		if (userAuthInfo == null) {
-			return new JsonObject().put("ret", false).put("message", "회원이 아닙니다.");
+			return new JsonObject().put("ret", false).put("message", "not found id");
 		}
 
 		//2) check a inputed password
 		String userPwd = userAuthInfo.getString("pwd");
 		if (pwd.equals(userPwd) == false) {
-			return new JsonObject().put("ret", false).put("message", "비밀번호가 다릅니다.");
+			return new JsonObject().put("ret", false).put("message", "wrong password");
 		}
 
 		String uidx = userAuthInfo.getString("uidx");
